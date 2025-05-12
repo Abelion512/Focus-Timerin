@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('background.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Branding */
+.brand {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.gradient-title h1 {
+  font-size: 2rem;
+  background: linear-gradient(to right, white, #e0e0e0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+/* Timer Display */
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.timer-display {
+  font-size: clamp(3rem, 12vw, 6rem);
+  font-weight: bold;
+  letter-spacing: 2px;
+  flex-grow: 1;
+  text-align: center;
+}
+
+/* Edit Button */
+#editButton {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Start Button */
+#startButton {
+  background: linear-gradient(to right, #bb40c2, #9153ed);
+  border: none;
+  padding: 12px 40px;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  margin: 1rem 0;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+#startButton:hover {
+  transform: scale(1.05);
+}
+
+/* Phone Lock Section */
+#phoneLockSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+#phoneLockSection h2 {
+  color: #9153ed;
+  margin-bottom: 1rem;
+}
+
+#phoneCountDisplay {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+#timerDisplay {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Time Inputs */
+#editInputs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+#editInputs input {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.3);
+  width: 70px;
+  text-align: center;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Click Count */
+.click-count {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .brand h2 {
+    font-size: 1.2rem;
+  }
+  .gradient-title h1 {
+    font-size: 1.6rem;
+  }
+  .timer-display {
+    font-size: clamp(2.5rem, 10vw, 5rem);
+  }
+  #editButton {
+    font-size: 1.2rem;
+  }
+  #editInputs input {
+    width: 60px;
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+  #startButton {
+    width: 100%;
+    max-width: 300px;
+    font-size: 1rem;
+  }
+}
+
+/* Ensure visibility on different backgrounds */
+* {
+  transition: all 0.3s ease;
+}

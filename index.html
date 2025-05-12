@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Mode - Abelink</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Metadata untuk preview -->
+  <meta property="og:title" content="Focus Timerin - Abelink" />
+  <meta property="og:description" content="Focus Timer modern dari Abelink. Bantu kamu fokus, produktif, dan stay on track!" />
+  <meta property="og:image" content="background.jpg" />
+  <meta property="og:url" content="https://focustimerin.netlify.app/" />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body>
+  <!-- Branding dan Task Label -->
+  <div class="brand">
+    <h2>Focus Timerin</h2>
+  </div>
+  <div class="gradient-title">
+    <h1>Focus Mode</h1>
+  </div>
+  <div class="timer-container">
+    <span id="timer" class="timer-display">00:00:00</span>
+    <button id="editButton" title="Custom timer">&#9998;</button>
+  </div>
+  <div id="editInputs" class="hidden">
+    <input type="number" id="customHours" placeholder="jam" min="0">
+    <input type="number" id="customMinutes" placeholder="menit" min="0">
+    <input type="number" id="customSeconds" placeholder="detik" min="1">
+  </div>
+  <button id="startButton">Start
+</button>
+  <div id="timesOpened" class="click-count">click count: <span id="count">0</span></div>
+  <audio id="endSound" src="iPhone Notification Sound Effect.mp3" preload="auto"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
