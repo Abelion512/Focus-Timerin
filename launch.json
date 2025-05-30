@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Launch index.html in Chrome",
+      "file": "${workspaceFolder}/${input:htmlFile}"
+    }
+  ],
+  "inputs": [
+    {
+      "type": "pickString",
+      "id": "htmlFile",
+      "description": "Select the HTML file to launch",
+      "options": [
+        "index.html",
+        "about.html",
+        "history.html",
+        "settings.html"
+      ]
+    }
+  ]
+}

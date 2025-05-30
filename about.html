@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - Focus Timer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dark-mode">
+  <nav class="main-nav">
+    <div class="brand">
+      <h2>Focus Timerin</h2>
+    </div>
+    <div class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="profile.html">Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <div class="container">
+    <h1>About Focus Timer</h1>
+    
+    <div class="about-section">
+      <h2>What is the Pomodoro Technique?</h2>
+      <p>The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. 
+      The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, 
+      separated by short breaks.</p>
+      
+      <h2>How to Use This App</h2>
+      <ol class="about-list">
+        <li>Choose a task you want to work on</li>
+        <li>Set the timer (Focus mode)</li>
+        <li>Work on the task until the timer rings</li>
+        <li>Take a short break (5 minutes)</li>
+        <li>After completing four "Pomodoros," take a longer break (10-15 minutes)</li>
+      </ol>
+      
+      <h2>Benefits</h2>
+      <ul class="about-list">
+        <li>Improved focus and concentration</li>
+        <li>Reduced anxiety related to deadlines</li>
+        <li>Better work and break balance</li>
+        <li>Increased accountability and motivation</li>
+        <li>Enhanced awareness of how much time tasks take</li>
+      </ul>
+    </div>
+    
+    <div class="version-info" id="versionInfo">
+      <p>Version <span id="appVersion">-</span></p>
+      <p>&copy; 2025 Focus Timerin. All rights reserved.</p>
+    </div>
+  </div>
+  <script>
+    // Tampilkan versi real time
+    function showVersionInfo() {
+      const version = localStorage.getItem('focusTimerVersion') || '1.2.2';
+      document.getElementById('appVersion').textContent = version;
+    }
+    showVersionInfo();
+    // Hamburger menu toggle for mobile
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+  </script>
+</body>
+</html>

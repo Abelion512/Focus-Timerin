@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile - Focus Timerin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="profile.css">
+  <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+  <style>
+    /* Ensure buttons are always clickable */
+    button {
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      position: relative;
+      z-index: 1000 !important;
+    }
+    
+    /* Improve dropdown visibility */
+    .edit-actions {
+      z-index: 1001 !important;
+      position: absolute;
+      background: #232323;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    /* Ensure modals are on top */
+    .version-modal {
+      z-index: 1002 !important;
+    }
+
+    /* Make buttons more responsive */
+    button:active {
+      transform: scale(0.98);
+    }
+  </style>
+  <!-- Load button handling after Firebase -->
+  <script src="profile-buttons.js"></script>
+</head>
+<body class="dark-mode">  <div class="profile-container">
+    <div class="profile-header-actions">
+      <button id="backBtn" type="button" class="back-button">
+        <span class="icon">←</span> Back
+      </button>
+      <button id="versionInfoBtn" class="version-button">Version Info</button>
+      <button id="editDropdownBtn" class="edit-button">Edit</button>
+    </div>
+    <div class="edit-actions" id="editActions">
+      <button id="editNameBtn" class="edit-action-btn">Edit Username</button>
+      <button id="editEmailBtn" class="edit-action-btn">Edit Email</button>
+      <button id="editPhotoBtn" class="edit-action-btn">Edit Photo</button>
+    </div>
+    <div class="profile-info">
+      <h2>Profile</h2>
+      <div class="profile-details">
+    <div class="profile-avatar" id="profileAvatar" style="pointer-events: none;">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#fff"/><path d="M4 20c0-2.2 3.6-4 8-4s8 1.8 8 4" fill="#fff"/></svg>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+        <div class="profile-field"><b>Email:</b> <span id="profileEmail">-</span></div>
+        <div class="profile-field"><b>Username:</b> <span id="profileName">-</span></div>
+        <div class="profile-field"><span class="field-icon">&#128100;</span> <b>Bergabung:</b> <span id="profileJoined">-</span></div>
+        <div class="profile-field"><span class="field-icon">&#128337;</span> <b>Fokus Total:</b> <span id="profileTotalFocus">0</span> menit</div>
+      </div>
+      <hr style="margin:1.5rem 0 1rem 0;border:0;border-top:1px solid #444;">
+      <div style="font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;">Actions</div>      <button id="changePasswordBtn" class="action-button" data-action="change-password">
+        <span class="icon">🔑</span> Ganti Password
+      </button>
+      <button id="toggleThemeBtn" class="action-button" data-action="toggle-theme">
+        <span class="icon">🌞</span> Toggle Dark/Light
+      </button>
+      <a class="action-button feedback-link" href="https://forms.gle/HLv3HcH3VJ3vQwRg9" target="_blank">
+        <span class="icon">✉️</span> Kirim Feedback
+      </a>
+      <div class="action-group">
+        <button id="logoutBtn" class="action-button danger-button" data-action="logout">
+          <span class="icon">🚪</span> Logout
+        </button>
+      </div>
+      <button class="logout-btn" id="loginBtn" type="button" style="display:none; background:#4f8cff;width:100%;padding:0.7rem 0;font-size:1em;margin-top:1.2rem;">Login</button>
+    </div>    <div class="version-info" id="versionInfo" style="display:none;">
+      <span>Versi: <span id="appVersion">-</span></span><br>
+      <span id="appChangelog"></span>
+      <div id="updateDescription" style="margin-top:0.5rem;font-size:0.95em;">
+        <b>Deskripsi Update:</b>
+        <div id="updateDescText"></div>
+      </div>
+    </div>
+    <div id="versionInfoModal" class="version-modal">
+      <div class="modal-content">
+        <button id="closeVersionInfo" class="modal-close" title="Tutup" aria-label="Tutup">&times;</button>
+        <div class="modal-title">
+          Versi: <span id="modalVersion">-</span>
+        </div>
+        <div class="version-history" id="modalChangelog">-</div>
+      </div>
+    </div>
+  </div>  <!-- Firebase Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updateProfile, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
+    
+    // Make auth globally available for button handlers
+    window.auth = null;
+    window.updateProfile = updateProfile;
+    window.sendPasswordResetEmail = sendPasswordResetEmail;
+    window.signOut = signOut;
+
+    const firebaseConfig = {      apiKey: "AIzaSyBxudMXI0S_NTcKJHpaMwkWuvjwLrXcDfA",
+      authDomain: "focus-timerin.firebaseapp.com",
+      projectId: "focus-timerin",
+      storageBucket: "focus-timerin.appspot.com",
+      messagingSenderId: "681353942231",
+      appId: "1:681353942231:web:a4eaf0e8e106370935cc92",
+      measurementId: "G-6TWY2FQXHG"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    window.auth = getAuth(app);
+    window.storage = getStorage(app);
+    
+    // Make Firebase functions globally available
+    window.updateProfile = updateProfile;
+    window.sendPasswordResetEmail = sendPasswordResetEmail;
+    window.signOut = signOut;
+
+    // Get DOM Elements
+    const backBtn = document.getElementById('backBtn');
+    const versionInfoBtn = document.getElementById('versionInfoBtn');
+    const editDropdownBtn = document.getElementById('editDropdownBtn');
+    const editActions = document.getElementById('editActions');
+    const editNameBtn = document.getElementById('editNameBtn');
+    const editEmailBtn = document.getElementById('editEmailBtn');
+    const editPhotoBtn = document.getElementById('editPhotoBtn');
+    const emailSpan = document.getElementById('profileEmail');
+    const nameSpan = document.getElementById('profileName');
+    const joinedSpan = document.getElementById('profileJoined');
+    const totalFocusSpan = document.getElementById('profileTotalFocus');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const closeVersionInfo = document.getElementById('closeVersionInfo');
+    const versionInfoModal = document.getElementById('versionInfoModal');
+    const avatarInput = document.getElementById('avatarInput');
+    const profileAvatar = document.getElementById('profileAvatar');    // Initialize ImageKit    // Initialize ImageKit SDK
+    const imagekit = new ImageKit({
+      publicKey: "public_ySA/zrQV3jHz1T9KiHuJh0fggbw=",
+      urlEndpoint: "https://ik.imagekit.io/focustimerin",
+      authenticationEndpoint: "/auth/imagekit" // We'll handle this on the server side
+    });
+
+    // URL generation helper function
+    function generateImageURL(path, options = {}) {
+      return imagekit.url({
+        path: path,
+        transformation: [{
+          height: options.height || "300",
+          width: options.width || "300",
+          crop: options.crop || "at_max"
+        }]
+      });
+    }
+
+    // Handle Avatar Upload
+    avatarInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        alert('Mohon pilih file gambar');
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) return;      try {
+        // Upload to ImageKit
+        const uploadResponse = await imagekit.upload({
+          file: file,
+          fileName: `avatar_${user.uid}`,
+          folder: "/avatars"
+        });
+        
+        console.log('Upload complete:', uploadResponse);
+        
+        // Generate optimized URL using our helper function
+        const photoURL = generateImageURL(uploadResponse.filePath, {
+          height: "300",
+          width: "300",
+          crop: "at_max"
+        });
+        console.log('ImageKit URL:', photoURL);
+        
+        // Update user profile
+        await updateProfile(user, { photoURL });
+        console.log('Profile updated');
+        
+        // Force reload the user to get the latest photoURL
+        await auth.currentUser.reload();
+        const updatedUser = auth.currentUser;
+        console.log('User reloaded, new photoURL:', updatedUser.photoURL);
+        
+        // Update avatar display with the new URL
+        updateAvatarDisplay(photoURL);
+        
+        // Hide edit dropdown
+        editActions.style.display = 'none';
+        
+        alert('Foto profil berhasil diperbarui!');
+      } catch (error) {
+        console.error('Error uploading avatar:', error);
+        alert('Gagal memperbarui foto profil: ' + error.message);
+      }
+    });
+
+    // When Edit Photo is clicked, trigger the file input
+    editPhotoBtn.onclick = () => avatarInput.click();    // When avatar is updated, always show the latest photo (force reload by changing src)    function updateAvatarDisplay(photoURL) {
+      if (photoURL) {
+        const img = new Image();
+        img.onload = () => {
+          profileAvatar.innerHTML = `<img src="${photoURL}?t=${Date.now()}" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">`;
+        };
+        img.onerror = () => {
+          console.error('Failed to load image:', photoURL);
+          profileAvatar.innerHTML = `<svg width="60" height="60" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#fff"/><path d="M4 20c0-2.2 3.6-4 8-4s8 1.8 8 4" fill="#fff"/></svg>`;
+        };
+        img.src = photoURL + '?t=' + Date.now();
+      } else {
+        profileAvatar.innerHTML = `<svg width="60" height="60" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#fff"/><path d="M4 20c0-2.2 3.6-4 8-4s8 1.8 8 4" fill="#fff"/></svg>`;
+      }
+    }
+    // Auth State Change Handler
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        emailSpan.textContent = '-';
+        nameSpan.textContent = '-';        updateAvatarDisplay(null);
+        joinedSpan.textContent = '-';
+        totalFocusSpan.textContent = '0';
+        logoutBtn.style.display = 'none';
+        loginBtn.style.display = 'block';
+        changePasswordBtn.disabled = true;
+        editEmailBtn.style.display = 'none';
+      } else {
+        emailSpan.textContent = user.email || 'guest';
+        updateAvatarDisplay(user.photoURL);
+        nameSpan.textContent = user.displayName || '-';
+        joinedSpan.textContent = user.metadata?.creationTime 
+          ? new Date(user.metadata.creationTime).toLocaleDateString('id-ID')
+          : '-';
+        
+        const key = 'focusHistory_' + (user.email || '').replace(/[^\w]/g, '');
+        const focusHistory = JSON.parse(localStorage.getItem(key) || '[]');
+        const totalMinutes = focusHistory.reduce((sum, item) => sum + (parseInt(item.duration) || 0), 0);
+        totalFocusSpan.textContent = totalMinutes;
+        
+        logoutBtn.style.display = 'block';
+        loginBtn.style.display = 'none';
+
+        const isGoogleUser = user.providerData.some(p => p.providerId === 'google.com');
+        if ((!user.email || user.email === 'guest') && isGoogleUser) {
+          editEmailBtn.style.display = 'inline-block';
+        } else {
+          editEmailBtn.style.display = 'none';
+        }
+
+        if (isGoogleUser) {
+          changePasswordBtn.disabled = true;
+          changePasswordBtn.textContent = 'Ganti Password (hanya email/password)';
+        } else {
+          changePasswordBtn.disabled = false;
+          changePasswordBtn.textContent = 'Ganti Password';
+        }
+      }    });
+
+    // Utility function to safely get DOM elements
+    function safeGet(id) {
+      return document.getElementById(id);
+    }
+
+    // Initialize button handlers
+    setTimeout(() => {
+      // Back button
+      const backBtn = safeGet('backBtn');
+  if (backBtn) {
+    backBtn.onclick = (e) => {
+      e.preventDefault();
+      window.history.back();
+    };
+  }
+
+  // Edit dropdown
+  const editDropdownBtn = safeGet('editDropdownBtn');
+  const editActions = safeGet('editActions');
+  if (editDropdownBtn && editActions) {
+    editDropdownBtn.onclick = (e) => {
+      e.stopPropagation();
+      editActions.style.display = (editActions.style.display === 'flex') ? 'none' : 'flex';
+    };
+    document.addEventListener('click', (e) => {
+      if (editActions.style.display === 'flex' &&
+          !editActions.contains(e.target) &&
+          e.target !== editDropdownBtn) {
+        editActions.style.display = 'none';
+      }
+    });
+  }
+
+  // Edit actions
+  const editNameBtn = safeGet('editNameBtn');
+  const editEmailBtn = safeGet('editEmailBtn');
+  const editPhotoBtn = safeGet('editPhotoBtn');
+  const avatarInput = safeGet('avatarInput');
+  if (editNameBtn) {
+    editNameBtn.onclick = async () => {
+      const newName = prompt('Nama baru:');
+      const user = auth.currentUser;
+      if (user && newName) {
+        try {
+          await updateProfile(user, { displayName: newName });
+          nameSpan.textContent = newName;
+          alert('Nama berhasil diubah!');
+        } catch (err) {
+          alert('Gagal mengubah nama: ' + err.message);
+        }
+      }
+      if (editActions) editActions.style.display = 'none';
+    };
+  }
+  if (editEmailBtn) {
+    editEmailBtn.onclick = () => {
+      const user = auth.currentUser;
+      if (user) {
+        const newEmail = prompt('Masukkan email baru:');
+        if (newEmail) {
+          user.updateEmail(newEmail)
+            .then(() => {
+              emailSpan.textContent = newEmail;
+              alert('Email berhasil diubah!');
+            })
+            .catch(err => alert('Gagal mengubah email: ' + err.message));
+        }
+      }
+      if (editActions) editActions.style.display = 'none';
+    };
+  }
+  if (editPhotoBtn && avatarInput) {
+    editPhotoBtn.onclick = () => avatarInput.click();
+  }
+
+  // Action buttons
+  const changePasswordBtn = safeGet('changePasswordBtn');
+  if (changePasswordBtn) {
+    changePasswordBtn.onclick = () => {
+      const user = auth.currentUser;
+      if (user?.email && !changePasswordBtn.disabled) {
+        sendPasswordResetEmail(auth, user.email)
+          .then(() => alert('Link reset password telah dikirim ke email Anda.'))
+          .catch(err => alert('Gagal mengirim email reset: ' + err.message));
+      }
+    };
+  }
+  const toggleThemeBtn = safeGet('toggleThemeBtn');
+  if (toggleThemeBtn) {
+    toggleThemeBtn.onclick = () => {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+      const settings = JSON.parse(localStorage.getItem('focusTimerSettings')) || {
+        theme: document.body.classList.contains('light-mode') ? 'light' : 'dark'
+      };
+      settings.theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+      localStorage.setItem('focusTimerSettings', JSON.stringify(settings));
+    };
+  }
+  const logoutBtn = safeGet('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.onclick = () => signOut(auth).then(() => window.location.reload());
+  }
+  const loginBtn = safeGet('loginBtn');
+  if (loginBtn) {
+    loginBtn.onclick = () => window.location.href = 'login.html';
+  }
+  // Version Info Modal
+  const versionInfoBtn = safeGet('versionInfoBtn');
+  const versionInfoModal = safeGet('versionInfoModal');
+  const closeVersionInfo = safeGet('closeVersionInfo');
+  if (versionInfoBtn && versionInfoModal && closeVersionInfo) {
+    versionInfoBtn.onclick = () => {
+      const versionHistory = JSON.parse(localStorage.getItem('focusTimerVersionHistory') || '[]');
+      const currentVersion = localStorage.getItem('focusTimerVersion') || '1.2.0';
+      let versionHtml = `<div style=\"text-align:left;\"><h3 style=\"margin-bottom:1rem;\">Versi Terkini: ${currentVersion}</h3>`;
+      versionHistory.slice(0, 4).forEach(ver => {
+        versionHtml += `\n          <div style=\"margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #444;\">\n            <b>v${ver.version}</b> (${ver.date})<br>\n            <div style=\"margin:0.5rem 0;white-space:pre-line;\">${ver.changelog}</div>\n          </div>`;
+      });
+      versionHtml += '</div>';
+      safeGet('modalVersion').textContent = currentVersion;
+      safeGet('modalChangelog').innerHTML = versionHtml;
+      versionInfoModal.style.display = 'flex';
+    };
+    closeVersionInfo.onclick = () => versionInfoModal.style.display = 'none';
+    versionInfoModal.addEventListener('click', (e) => {
+      if (e.target === versionInfoModal) versionInfoModal.style.display = 'none';
+    });
+  }
+}, 0);
+    // --- END BUTTON EVENT HANDLERS FINAL FIX ---
+  </script>
+
+  <!-- Chatbase AI Integration -->
+  <script>
+    (function(){
+      if(!window.chatbase||window.chatbase("getState")!=="initialized"){
+        window.chatbase=(...args)=>{
+          if(!window.chatbase.q){window.chatbase.q=[]}
+          window.chatbase.q.push(args)
+        };
+        window.chatbase=new Proxy(window.chatbase,{
+          get(target,prop){
+            if(prop==="q"){return target.q}
+            return(...args)=>target(prop,...args)
+          }
+        });
+      }
+      const onLoad=function(){
+        const script=document.createElement("script");
+        script.src="https://www.chatbase.co/embed.min.js";
+        script.id="x1jLmWm9ONoBhGQmyytpp";
+        script.domain="www.chatbase.co";
+        document.body.appendChild(script)
+      };
+      if(document.readyState==="complete"){onLoad()}
+      else{window.addEventListener("load",onLoad)}
+    })();
+  </script>
+</body>
+</html>

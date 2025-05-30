@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session History - Focus Timerin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      background: #181818;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 480px;
+      margin: 3rem auto;
+      background: #232323;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #0004;
+      padding: 2rem 2.5rem 2.5rem 2.5rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .history-list {
+      margin-bottom: 2rem;
+    }
+    .history-item {
+      background: #292929;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 8px #0002;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: background 0.2s;
+    }
+    .history-item:hover {
+      background: #313a5a;
+    }
+    .history-date {
+      font-size: 0.95rem;
+      color: #8fa7ff;
+      font-weight: 600;
+    }
+    .history-task h3 {
+      margin: 0 0 0.2rem 0;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .history-details {
+      font-size: 0.95rem;
+      color: #bdbdbd;
+      display: flex;
+      gap: 1.5rem;
+    }
+    .clear-history-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(90deg, #4f8cff 0%, #6b47ff 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 1.5rem;
+      letter-spacing: 1px;
+    }
+    .clear-history-btn:hover {
+      background: linear-gradient(90deg, #6b47ff 0%, #4f8cff 100%);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 4px 16px #4f8cff44;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 32px;
+      background: #232323;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .theme-toggle i {
+      font-size: 1.4rem;
+      color: #a78bfa;
+    }
+    .light-mode {
+      background: #f4f4f4;
+      color: #232323;
+    }
+    .light-mode .container {
+      background: #fff;
+      color: #232323;
+    }
+    .light-mode .history-item {
+      background: #f4f4f4;
+      color: #232323;
+    }
+    .light-mode .history-item:hover {
+      background: #e0e7ff;
+    }
+    .light-mode .history-date {
+      color: #6b47ff;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.2rem 0.5rem 2rem 0.5rem;
+      }
+      .theme-toggle {
+        right: 12px;
+        top: 12px;
+      }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <nav class="main-nav">
+    <div class="brand">
+      <h2>Focus Timerin</h2>
+    </div>
+    <div class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="history.html" class="active">History</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="profile.html">Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <div class="container">
+    <h1>Session History</h1>
+    <div class="history-list"></div>
+    <button class="export-history-btn" id="exportHistoryBtn">Export History</button>
+    <button class="clear-history-btn" id="clearHistoryBtn">Clear History</button>
+  </div>
+
+  <script>
+    // Toggle dark/light theme
+    document.getElementById('themeToggle').onclick = function() {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+      const icon = document.querySelector('.theme-toggle i');
+      if (document.body.classList.contains('light-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    };
+
+    // Hamburger menu toggle for mobile
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+
+    // Render history (tanpa login)
+    function renderHistory() {
+      const historyList = document.querySelector('.history-list');
+      if (!historyList) return;
+      // Ambil userEmail dari localStorage, fallback ke 'guest'
+      const userEmail = localStorage.getItem('userEmail') || 'guest';
+      const key = 'focusHistory_' + userEmail.replace(/[^\w]/g, '');
+      const historyData = JSON.parse(localStorage.getItem(key)) || [];
+      historyList.innerHTML = '';
+      if (historyData.length === 0) {
+        historyList.innerHTML = '<div class="history-item"><div class="history-date">Belum ada riwayat.</div></div>';
+        return;
+      }
+      historyData.forEach(item => {
+        historyList.innerHTML += `
+          <div class="history-item">
+            <div class="history-date">${item.date}</div>
+            <div class="history-task">
+              <h3>${item.task}</h3>
+              <div class="history-details">
+                <span>Focus: ${item.duration} min</span>
+                <span>Completed: ${item.completed}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Clear history
+    document.getElementById('clearHistoryBtn').onclick = function() {
+      const userEmail = localStorage.getItem('userEmail') || 'guest';
+      const key = 'focusHistory_' + userEmail.replace(/[^\w]/g, '');
+      localStorage.removeItem(key);
+      renderHistory();
+    };
+
+    // Export history
+    document.getElementById('exportHistoryBtn').onclick = function() {
+      const userEmail = localStorage.getItem('userEmail') || 'guest';
+      const key = 'focusHistory_' + userEmail.replace(/[^\w]/g, '');
+      const historyData = JSON.parse(localStorage.getItem(key)) || [];
+      if (historyData.length === 0) {
+        alert('Tidak ada data untuk diekspor.');
+        return;
+      }
+      const csv = [
+        ['Tanggal', 'Task', 'Durasi (menit)', 'Selesai'],
+        ...historyData.map(item => [item.date, item.task, item.duration, item.completed])
+      ].map(e => e.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'focus-timerin-history.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    // Render history saat halaman dibuka
+    renderHistory();
+  </script>
+</body>
+</html>

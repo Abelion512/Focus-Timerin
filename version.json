@@ -1,0 +1,67 @@
+{
+  "currentVersion": "1.2.3",
+  "lastUpdate": "2025-05-27",
+  "versionHistory": [
+    {
+      "version": "1.2.3",
+      "date": "2025-05-27",
+      "changelog": "• UI Improvement: Login page redesign\n• Bug fix: Fixed autofill background color\n• Added: Version tracking system\n• Updated: Google login button style",
+      "details": {
+        "features": [
+          "Login page redesign with modern UI",
+          "Improved Google login integration",
+          "Version tracking system"
+        ],
+        "bugfixes": [
+          "Fixed autofill background color in login form",
+          "Fixed remember-me alignment"
+        ]
+      }
+    },
+    {
+      "version": "1.2.2",
+      "date": "2025-05-20",
+      "changelog": "• Added eye icon for password visibility\n• Fixed mobile responsive issues",
+      "details": {
+        "features": [
+          "Password visibility toggle",
+          "Better mobile layout"
+        ],
+        "bugfixes": [
+          "Fixed responsive issues on small screens",
+          "Fixed button alignment on mobile"
+        ]
+      }
+    },
+    {
+      "version": "1.2.1",
+      "date": "2025-05-15",
+      "changelog": "• Performance improvements\n• Bug fixes",
+      "details": {
+        "features": [
+          "Improved load time"
+        ],
+        "bugfixes": [
+          "Fixed memory leaks",
+          "Fixed timer accuracy"
+        ]
+      }
+    },
+    {
+      "version": "1.2.0",
+      "date": "2025-05-10",
+      "changelog": "• Major update: New UI\n• Added dark mode",
+      "details": {
+        "features": [
+          "Complete UI overhaul",
+          "Dark mode support",
+          "New animations"
+        ],
+        "bugfixes": [
+          "Fixed various UI glitches",
+          "Improved theme switching"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Mode - Abelink</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="description" content="Aplikasi Focus Timerin membantu Anda meningkatkan produktivitas dengan teknik Pomodoro.">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- Firebase App (core) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    // Ganti dengan config dari Firebase Console
+    const firebaseConfig = {
+      apiKey: "API_KEY",
+      authDomain: "PROJECT_ID.firebaseapp.com",
+      projectId: "PROJECT_ID",
+      appId: "APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+</head>
+<body class="dark-mode">
+  <nav class="main-nav" aria-label="Main Navigation">
+    <div class="brand">
+      <h2>Focus Timerin</h2>
+    </div>
+    <div class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="profile.html">Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
+  <div class="fullscreen-toggle" id="fullscreenToggle">
+    <i class="fas fa-expand"></i>
+  </div>
+
+  <div class="task-label">
+    <input type="text" id="taskInput" placeholder="Apa yang kamu kerjakan hari ini?" maxlength="50">
+  </div>
+  <div class="mode-selector">
+    <div class="mode-btn active" data-mode="focus" data-minutes="25">Fokus</div>
+    <div class="mode-btn" data-mode="short-break" data-minutes="5">Short Break</div>
+    <div class="mode-btn" data-mode="long-break" data-minutes="10">Long Break</div>
+  </div>
+  <div class="timer-container">
+    <div class="progress-container">
+      <svg class="progress-ring" width="280" height="280">
+        <circle class="progress-ring-bg" r="130" cx="140" cy="140" />
+        <circle class="progress-ring-circle" r="130" cx="140" cy="140" />
+      </svg>
+      <div id="timer" class="timer-display">00:00</div>
+      <button id="editButton" title="Custom timer">
+        <i class="fas fa-pen"></i>
+      </button>
+    </div>
+  </div>
+  <div id="editInputs" class="hidden">
+    <input type="number" id="customHours" placeholder="jam" min="0" max="24">
+    <input type="number" id="customMinutes" placeholder="menit" min="0" max="59">
+    <input type="number" id="customSeconds" placeholder="detik" min="0" max="59">
+    <div class="slider-container">
+      <input type="range" id="timeSlider" class="time-slider" min="1" max="120" value="25">
+    </div>
+  </div>
+  <button id="startButton">Start</button>
+  <div id="timesOpened" class="click-count">Sesi fokus: <span id="count">0</span></div>
+  <div class="motivation-quote">
+    <p id="quoteText">Kesuksesan adalah kemampuan untuk bergerak dari satu kegagalan ke kegagalan lainnya tanpa kehilangan semangat.</p>
+    <div class="author" id="quoteAuthor">— Winston Churchill</div>
+  </div>
+  <audio id="endSound" src="iPhone Notification Sound Effect.mp3" preload="auto"></audio>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" id="closeProfileModal">&times;</span>
+      <h2>Profile</h2>
+      <div><b>Email:</b> <span id="profileEmail">-</span></div>
+      <div><b>Display Name:</b> <span id="profileName">-</span> <button id="editNameBtn">Edit</button></div>
+      <div><b>Bergabung Sejak:</b> <span id="profileJoined">-</span></div>
+      <div><b>Total Waktu Fokus:</b> <span id="profileTotalFocus">0</span> menit</div>
+      <button id="changePasswordBtn">Change Password</button>
+      <button id="toggleThemeBtn">Toggle Dark/Light</button>
+      <a href="https://forms.gle/HLv3HcH3VJ3vQwRg9" target="_blank">Feedback/Saran</a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </div>
+  
+</body>
+</html>

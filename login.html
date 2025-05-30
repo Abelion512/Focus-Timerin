@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Focus Timerin</title>
+    <!-- Test version update -->
+    <meta name="description" content="Login page for Focus Timerin app">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: #16213e url('background.jpg') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+        .wrapper {
+            background: rgba(22, 33, 62, 0.95);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 18px;
+            padding: 2.5rem 2rem 2rem 2rem;
+            width: 100%;
+            max-width: 370px;
+            color: #fff;
+            position: relative;
+            border: 1.5px solid rgba(255,255,255,0.08);
+        }
+        .wrapper h1 {
+            text-align: center;
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+        .input-box {
+            position: relative;
+            margin-bottom: 1.3rem;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .input-box input {
+            width: 100%;
+            height: 45px;
+            background: rgba(255,255,255,0.10);
+            border: 2px solid rgba(255,255,255,0.18);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #fff;
+            padding: 0 20px 0 48px;
+            box-sizing: border-box;
+            outline: none;
+            margin: 0;
+            display: block;
+            transition: border 0.2s, background 0.2s;
+            -webkit-text-fill-color: #fff !important;
+        }
+        .input-box input:focus {
+            border: 2px solid #4f8cff;
+            background: rgba(255,255,255,0.13);
+            color: #fff;
+            -webkit-text-fill-color: #fff !important;
+        }
+        .input-box input:not(:placeholder-shown) {
+            color: #fff;
+            -webkit-text-fill-color: #fff !important;
+            background: rgba(255,255,255,0.10);
+        }
+        .input-box input:-webkit-autofill,
+        .input-box input:-webkit-autofill:focus,
+        .input-box input:-webkit-autofill:hover,
+        .input-box input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.10) inset !important;
+            box-shadow: 0 0 0 1000px rgba(255,255,255,0.10) inset !important;
+            background: rgba(255,255,255,0.10) !important;
+            -webkit-text-fill-color: #fff !important;
+            color: #fff !important;
+            border-radius: 40px;
+        }
+        .input-box input::placeholder {
+            color: #bfc9d1;
+            opacity: 1;
+        }
+        .input-box i {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #bfc9d1;
+            pointer-events: none;
+            background: transparent;
+        }
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin: -15px 0 15px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 10px;
+        }
+        .remember-forgot label input {
+            accent-color: #fff;
+            margin-right: 3px;
+        }
+        .remember-forgot a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            width: 100%;
+            height: 45px;
+            background: #fff;
+            border: 1px solid #4285F4;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #4285F4;
+            font-weight: 600;
+            margin: 0.7rem auto 1.2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            max-width: 320px;
+        }
+        .btn:hover {
+            background: #4f8cff;
+            color: #fff;
+            box-shadow: 0 0 0 2px #4285F4, 0 0 10px rgba(66,133,244,0.15);
+        }
+        .btn i {
+            font-size: 20px;
+            color: #4285F4;
+            transition: color 0.2s;
+        }
+        .btn:hover i {
+            color: #fff;
+        }
+        .register-link {
+            text-align: center;
+            font-size: 14px;
+            margin: 20px 0 15px;
+        }
+        .register-link a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .wrapper {
+                padding: 1.5rem 0.7rem 1.2rem 0.7rem;
+                max-width: 98vw;
+            }
+            .wrapper h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div class="wrapper">
+    <form action="" autocomplete="off">
+      <h1>Login</h1>
+      <div class="input-box">
+        <input type="text" placeholder="Email" required>
+        <i class='bx bxs-user'></i>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="Password" required>
+        <i class='bx bxs-lock-alt'></i>
+      </div>
+      <div class="remember-forgot">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn">Login</button>
+      <button type="button" class="btn" id="google-login">
+        <i class='bx bxl-google'></i>
+        Login with Google
+      </button>
+      <div class="register-link">
+        <p>Don't have an account? <a href="#">Register</a></p>
+      </div>
+    </form>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    // Konfigurasi Firebase Anda
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxudMXI0S_NTcKJHpaMwkWuvjwLrXcDfA",
+      authDomain: "focus-timerin.firebaseapp.com",
+      databaseURL: "https://focus-timerin-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "focus-timerin",
+      storageBucket: "focus-timerin.appspot.com",
+      messagingSenderId: "681353942231",
+      appId: "1:681353942231:web:a4eaf0e8e106370935cc92",
+      measurementId: "G-6TWY2FQXHG"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Register: redirect ke register.html
+    const registerLink = document.querySelector('.register-link a');
+    registerLink.onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'register.html';
+    };
+
+    // Reset Password
+    const forgotLink = document.querySelector('.remember-forgot a');
+    forgotLink.onclick = function(e) {
+      e.preventDefault();
+      const input = document.querySelectorAll('.input-box input');
+      const userOrEmail = input[0].value;
+      let email = userOrEmail;
+      if (!userOrEmail.includes('@')) {
+        email = userOrEmail + '@gmail.com'; // Atur sesuai kebutuhan
+      }
+      if (!userOrEmail) {
+        // Fokus ke input jika kosong
+        input[0].focus();
+        return;
+      }
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          forgotLink.textContent = 'Email sent!';
+          setTimeout(() => { forgotLink.textContent = 'Forgot password?'; }, 3000);
+        })
+        .catch(error => {
+          forgotLink.textContent = 'Failed!';
+          setTimeout(() => { forgotLink.textContent = 'Forgot password?'; }, 3000);
+        });
+    };
+
+    // Redirect ke index.html jika login berhasil
+    function redirectToHome() {
+      window.location.href = 'index.html';
+    }
+
+    // Login dengan Google
+    document.getElementById('google-login').onclick = function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          redirectToHome();
+        })
+        .catch(error => {
+          alert('Login Google gagal: ' + error.message);
+        });
+    };
+
+    // Login manual (username/email & password)
+    document.querySelector('form').onsubmit = function(e) {
+      e.preventDefault();
+      const input = document.querySelectorAll('.input-box input');
+      const userOrEmail = input[0].value;
+      const password = input[1].value;
+      let email = userOrEmail;
+      if (!userOrEmail.includes('@')) {
+        email = userOrEmail + '@gmail.com'; // Atur sesuai kebutuhan
+      }
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          redirectToHome();
+        })
+        .catch(error => {
+          alert('Login gagal: ' + error.message);
+        });
+    };
+  </script>
+</body>
+</html>
